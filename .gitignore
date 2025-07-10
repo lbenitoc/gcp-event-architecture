@@ -4,6 +4,10 @@ terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/.terraform.lock.hcl
 terraform/function-source.zip
+terraform/modules/cloud-function/function-source.zip
+
+# Service Account Key (IMPORTANTE - no subir al repo)
+github-actions-key.json
 
 # OS
 .DS_Store
@@ -18,4 +22,4 @@ Thumbs.db
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
