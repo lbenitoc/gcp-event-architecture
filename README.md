@@ -1,81 +1,56 @@
-# Arquitectura Orientada a Eventos - GCP
+# Procesamiento Automático de Archivos - GCP
 
-## Descripción
-Arquitectura que procesa automáticamente archivos al ser subidos a Cloud Storage usando Pub/Sub y Cloud Functions.
+## ¿Qué hace?
+Sistema que procesa archivos automáticamente al subirlos a Google Cloud Storage.
 
-## Arquitectura
-```
-Cloud Storage (Input) → Pub/Sub Topic → Cloud Function → Cloud Storage (Output)
-```
+**Flujo:** Subir archivo → Procesamiento automático → Archivo modificado en bucket de salida
 
-## Componentes
-- **Input Bucket**: `test-gcp-input-files-dev`
-- **Output Bucket**: `test-gcp-processed-files-dev`
-- **Pub/Sub Topic**: `file-processing-topic`
-- **Cloud Function**: `file-processor-function`
+## Setup rápido
 
-## Despliegue
-
-### Prerequisitos
-- Google Cloud CLI instalado
-- Terraform instalado
-- Proyecto GCP: `test-gcp-465402`
-
-### Comandos
+### 1. Configurar proyecto
 ```bash
-# Autenticación
-gcloud auth application-default login
-gcloud config set project test-gcp-465402
+# Cambiar TU_PROJECT_ID por tu proyecto real
+export PROJECT_ID=TU_PROJECT_ID
 
-# Despliegue
+# Habilitar APIs
+gcloud services enable cloudfunctions.googleapis.com cloudbuild.googleapis.com pubsub.googleapis.com storage.googleapis.com
+```
+
+### 2. Configurar variables
+Editar `terraform/environments/dev/terraform.tfvars`:
+```hcl
+project_id = "TU_PROJECT_ID"
+input_bucket_name = "tu-nombre-unico-input"
+output_bucket_name = "tu-nombre-unico-output"
+```
+
+Editar `terraform/main.tf` línea 8:
+```hcl
+bucket = "TU_PROJECT_ID-terraform-state"
+```
+
+### 3. Deploy
+```bash
+# Crear bucket para estado
+gsutil mb gs://TU_PROJECT_ID-terraform-state
+
+# Deploy
 cd terraform
 terraform init
 terraform apply -var-file="environments/dev/terraform.tfvars"
 ```
 
-### Prueba
+### 4. Probar
 ```bash
-# Crear archivo de prueba
-echo "archivo de prueba" > test.txt
-
-# Subir archivo (esto activa el procesamiento automático)
-gsutil cp test.txt gs://test-gcp-input-files-dev/
-
-# Verificar que se procesó
-gsutil ls gs://test-gcp-processed-files-dev/
-
-# Ver contenido procesado
-gsutil cp gs://test-gcp-processed-files-dev/processed_test.txt ./
-type processed_test.txt
+echo "test" > test.txt
+gsutil cp test.txt gs://tu-nombre-unico-input/
+gsutil ls gs://tu-nombre-unico-output/
 ```
 
-## Variables Configurables
-- `project_id`: ID del proyecto GCP
-- `region`: Región de despliegue
-- `input_bucket_name`: Nombre del bucket de entrada
-- `output_bucket_name`: Nombre del bucket de salida
+## Deploy automático
+Ver `PIPELINE.md` para configurar GitHub Actions.
 
-## Limpieza de Recursos
+## Limpiar
 ```bash
-# Eliminar todos los recursos creados
-cd terraform
 terraform destroy -var-file="environments/dev/terraform.tfvars"
-```
-
-## Estructura del Proyecto
-```
-gcp-event-architecture/
-├── terraform/
-│   ├── main.tf
-│   ├── outputs.tf
-│   └── environments/
-│       └── dev/
-│           └── terraform.tfvars
-├── functions/
-│   └── file-processor/
-│       ├── main.py
-│       └── requirements.txt
-├── scripts/
-│   └── cleanup.sh
-└── README.md
 ```

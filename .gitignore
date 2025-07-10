@@ -6,20 +6,11 @@ terraform/.terraform.lock.hcl
 terraform/function-source.zip
 terraform/modules/cloud-function/function-source.zip
 
-# Service Account Key (IMPORTANTE - no subir al repo)
+# Service Account Key
 github-actions-key.json
-
-# OS
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-
-# Logs
-*.log
 
 # Temporary files
 *.tmp
 *.temp
+test-*.txt
+processed_*.txt

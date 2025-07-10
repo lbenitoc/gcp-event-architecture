@@ -48,7 +48,7 @@ Tamaño original: {len(content)} caracteres
 """
         
         # Subir archivo procesado al bucket de salida
-        output_bucket_name = os.environ.get('OUTPUT_BUCKET', 'test-gcp-processed-files-dev')
+        output_bucket_name = os.environ.get('OUTPUT_BUCKET', 'default-output-bucket')
         output_bucket = client.bucket(output_bucket_name)
         output_blob = output_bucket.blob(f"processed_{file_name}")
         output_blob.upload_from_string(processed_content)

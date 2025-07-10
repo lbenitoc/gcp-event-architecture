@@ -1,41 +1,41 @@
-# Pipeline CI/CD - GitHub Actions
+# Deploy Automático con GitHub Actions
 
-## Descripción
-Pipeline automatizado que despliega la Cloud Function usando Terraform en múltiples ambientes.
+## Setup CI/CD (una sola vez)
 
-## Flujo del Pipeline
+### 1. Service Account
+```bash
+export PROJECT_ID=TU_PROJECT_ID
 
-### Pull Request
-- **Trigger:** PR hacia master
-- **Acción:** `terraform plan`
-- **Propósito:** Validar cambios antes del merge
-
-### Push a Master
-- **Trigger:** Push directo a master
-- **Acción:** `terraform apply`
-- **Propósito:** Despliegue automático a desarrollo
-
-## Componentes del Pipeline
-
-### 1. Authentication
-- Service Account: `github-actions-sa@test-gcp-465402.iam.gserviceaccount.com`
-- Secret: `GCP_SA_KEY` (clave JSON en GitHub Secrets)
-
-### 2. Backend Remoto
-- **Bucket:** `test-gcp-terraform-state-465402`
-- **Path:** `terraform/state/default.tfstate`
-
-### 3. Ambientes
-- **DEV:** Desplegado automáticamente en push a master
-- **PROD:** Configurado en `environments/prod/`
-
-## Arquitectura Modular 
+gcloud iam service-accounts create github-actions-sa --project=$PROJECT_ID
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:github-actions-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/editor"
 ```
-terraform/
-├── main.tf                    # Configuración principal
-├── modules/
-│   └── cloud-function/        # Módulo reutilizable
-└── environments/
-├── dev/                   # Variables desarrollo
-└── prod/                  # Variables producción
+
+### 2. Clave para GitHub
+```bash
+gcloud iam service-accounts keys create key.json \
+  --iam-account=github-actions-sa@$PROJECT_ID.iam.gserviceaccount.com
 ```
+
+### 3. Configurar GitHub
+1. Tu repo → Settings → Secrets → Actions
+2. Nuevo secret: `GCP_SA_KEY`
+3. Pegar contenido completo de `key.json`
+4. Eliminar archivo: `rm key.json`
+
+### 4. Backend remoto
+```bash
+gsutil mb gs://$PROJECT_ID-terraform-state
+```
+
+Editar `terraform/main.tf` línea 8:
+```hcl
+bucket = "TU_PROJECT_ID-terraform-state"
+```
+
+## Uso
+- **Push** → Deploy automático
+- **Pull Request** → Solo validación
+
+Ver deploys: Tu repo → Actions tab
