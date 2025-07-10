@@ -1,0 +1,1 @@
+"Este es un archivo de prueba para procesar con la arquitectura de eventos" 
