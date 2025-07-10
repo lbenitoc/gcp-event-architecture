@@ -61,10 +61,10 @@ resource "google_pubsub_topic" "file_processing_topic" {
 }
 
 # Permisos para que Storage publique en Pub/Sub
-resource "google_project_iam_member" "pubsub_publisher" {
-  project = var.project_id
-  role    = "roles/pubsub.publisher"
-  member  = "serviceAccount:service-${data.google_project.project.number}@gs-project-accounts.iam.gserviceaccount.com"
+resource "google_pubsub_topic_iam_member" "storage_publisher" {
+  topic  = google_pubsub_topic.file_processing_topic.name
+  role   = "roles/pubsub.publisher"
+  member = "serviceAccount:service-${data.google_project.project.number}@gs-project-accounts.iam.gserviceaccount.com"
 }
 
 # Notificación del bucket al Pub/Sub
@@ -73,7 +73,7 @@ resource "google_storage_notification" "bucket_notification" {
   topic          = google_pubsub_topic.file_processing_topic.id
   payload_format = "JSON_API_V1"
   event_types    = ["OBJECT_FINALIZE"]
-  depends_on     = [google_project_iam_member.pubsub_publisher]
+  depends_on     = [google_pubsub_topic_iam_member.storage_publisher]
 }
 
 # Bucket para el código de la función
