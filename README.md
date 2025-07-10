@@ -5,6 +5,16 @@ Sistema que procesa archivos automáticamente al subirlos a Google Cloud Storage
 
 **Flujo:** Subir archivo → Procesamiento automático → Archivo modificado en bucket de salida
 
+## Configuración para tu entorno
+
+**Este código está configurado para el proyecto `test-gcp-465402`.** Para usarlo en tu entorno:
+
+1. **Cambiar project ID**: Editar `terraform/environments/dev/terraform.tfvars`
+2. **Cambiar bucket de estado**: Editar `terraform/main.tf` línea 8  
+3. **Cambiar nombres de buckets**: Usar nombres únicos en `terraform.tfvars`
+
+Ver `terraform.tfvars.example` para referencia.
+
 ## Setup rápido
 
 ### 1. Configurar proyecto

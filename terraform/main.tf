@@ -6,10 +6,10 @@ terraform {
     }
   }
   
-backend "gcs" {
-  bucket = "CHANGE_ME-terraform-state"
-  prefix = "terraform/state"
-	}
+  backend "gcs" {
+    bucket = "test-gcp-terraform-state-465402"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {

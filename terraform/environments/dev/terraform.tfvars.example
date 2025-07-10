@@ -1,13 +1,12 @@
- # Ejemplo de configuración - Copiar a terraform.tfvars y personalizar
+# Configuración para tu entorno - copiar valores a terraform.tfvars
 
-project_id = "TU_PROJECT_ID_AQUI"              # REQUERIDO: Tu project ID de GCP
-region     = "us-central1"                     # Opcional: Región de GCP
-zone       = "us-central1-a"                   # Opcional: Zona de GCP
-environment = "dev"                            # Ambiente
+project_id = "test-gcp-465402"
+region     = "us-central1"
+zone       = "us-central1-a"
+environment = "dev"
 
-# IMPORTANTE: Los nombres de buckets deben ser únicos globalmente
-# Cambia "tu-proyecto" por algo único
-input_bucket_name    = "tu-proyecto-input-files-dev"
-output_bucket_name   = "tu-proyecto-processed-files-dev"
+# Buckets únicos para este proyecto
+input_bucket_name    = "test-gcp-input-files-dev"
+output_bucket_name   = "test-gcp-processed-files-dev"
 pubsub_topic_name    = "file-processing-topic"
 function_name        = "file-processor-function"
